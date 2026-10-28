@@ -1,0 +1,44 @@
+# Shop Inventory & Sales API
+
+A REST API for a small shop, built with Django and Django REST Framework. It tracks products and stock, records sales, and gives the owner a daily sales summary.
+
+## Features
+- Products and categories (full CRUD)
+- Recording a sale automatically reduces stock
+- Overselling protection: a sale fails if there isn't enough stock
+- Token authentication with two roles:
+  - **Owner** (staff): manages everything and sees the daily summary
+  - **Cashier**: views products and records sales only
+- Daily sales summary (owner only)
+
+## Tech
+Python, Django, Django REST Framework, SQLite
+
+## Run it locally
+```bash
+git clone https://github.com/sumi74/shop-inventory-api.git
+cd shop-inventory-api
+python -m venv venv
+venv\Scripts\activate        # Mac/Linux: source venv/bin/activate
+pip install django djangorestframework
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+## Endpoints
+| Method | Endpoint | Who | Purpose |
+|---|---|---|---|
+| POST | `/api/login/` | Anyone | Get an auth token |
+| GET | `/api/products/` | Logged in | List products |
+| POST/PUT/DELETE | `/api/products/` | Owner | Manage products |
+| GET/POST | `/api/categories/` | Owner can edit | Manage categories |
+| GET/POST | `/api/sales/` | Logged in | View / record sales |
+| GET | `/api/sales/summary/` | Owner | Today's sales total |
+
+## Example: record a sale
+```json
+POST /api/sales/
+{"items": [{"product": 1, "quantity": 2}]}
+```
+Stock is reduced automatically, and the sale total is calculated.
